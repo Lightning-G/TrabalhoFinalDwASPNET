@@ -1,26 +1,115 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            background-size: cover;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
 
-<style>
-    body {
-        /* TROCA O FUNDO SE QUISERES */
-        background-image: url("https://th.bing.com/th/id/OIP.mfp366-FD3-obFRre95CTwHaNK?w=115&h=180&c=7&r=0&o=5&dpr=1.5&pid=1.7"); 
-        background-size: cover;
-        background-repeat: no-repeat;
-    }
-</style>
+        .base {
+            text-align: center;
+        }
 
-<div class="text-center">
-    @{
-        ViewBag.Title = "Home";
-    }
+        .container{
+            width: 80%;
+        }
 
-    <h2>Welcome to our website!</h2>
+        .slider {
+            position: relative;
+            width: 100%;
+            height: auto;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
 
-    <img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/music-festival-flyer-template-2fbe465e6161b2843de744f9a779d699_screen.jpg?ts=1561511008" alt="Company Logo">
+            .slider img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
 
-    <p>About Our Company:</p>
-    <p>Welcome to EventX! The place where you can create, edit, and join events from the comfort of your own home or in-person. Our platform offers a variety of features to make event planning and participation easier than ever. Whether you're looking to organize a virtual conference or an in-person meetup, we've got you covered. Our easy-to-use tools allow you to manage your event details, schedule sessions, and interact with your attendees seamlessly. Join our community today and start planning your next event with us!</p>
+        .slider-nav {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
 
-</div>
+            .slider-nav a {
+                display: block;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background-color: #888;
+                margin: 0 5px;
+                cursor: pointer;
+            }
+
+                .slider-nav a.active {
+                    background-color: #333;
+                }
+
+        .slider img:not(:first-child) {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="base">
+        <div class="slider">
+            <img src="https://i.ibb.co/tHPgY4d/Slider1.jpg" alt="Slider1">
+            <img src="https://i.ibb.co/vD7qK9W/Slider2.jpg" alt="Slider2">
+            <img src="https://i.ibb.co/QbfhG2B/Slider3.jpg" alt="Slider3">
+        </div>
+
+        <div class="slider-nav">
+            <a class="active"></a>
+            <a></a>
+            <a></a>
+        </div>
+
+        <div class="container">
+            <h3>About Our Company:</h3>
+            <p>Welcome to EventX! The place where you can create, edit, and join events from the comfort of your own home or in-person. Our platform offers a variety of features to make event planning and participation easier than ever. Whether you're looking to organize a virtual conference or an in-person meetup, we've got you covered. Our easy-to-use tools allow you to manage your event details, schedule sessions, and interact with your attendees seamlessly. Join our community today and start planning your next event with us!</p>
+        </div>
+    </div>
+
+    <script>
+        const sliderImages = Array.from(document.querySelectorAll('.slider img'));
+        const sliderNav = Array.from(document.querySelectorAll('.slider-nav a'));
+
+        let currentIndex = 0;
+        let intervalId;
+
+        function showImage(index) {
+            sliderImages.forEach(img => img.style.display = 'none');
+            sliderNav.forEach(nav => nav.classList.remove('active'));
+
+            sliderImages[index].style.display = 'block';
+            sliderNav[index].classList.add('active');
+        }
+
+        function startSlider() {
+            intervalId = setInterval(() => {
+                currentIndex = (currentIndex + 1) % sliderImages.length;
+                showImage(currentIndex);
+            }, 2000);
+        }
+
+        sliderNav.forEach((nav, index) => {
+            nav.addEventListener('click', () => {
+                clearInterval(intervalId);
+                currentIndex = index;
+                showImage(currentIndex);
+                startSlider();
+            });
+        });
+
+        startSlider();
+    </script>
+</body>
+</html>
