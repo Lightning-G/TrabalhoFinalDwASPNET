@@ -256,7 +256,6 @@ namespace TrabalhoFinalDwASPNET.Controllers
             return View(myEvents);
         }
 
-
         public string GetUserId()
         {
             var userId = _userManager.GetUserId(User);

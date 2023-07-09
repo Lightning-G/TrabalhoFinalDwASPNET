@@ -82,6 +82,7 @@
 </div>
 
 <div class="bots">
+    <br />
     <form id="participateForm" method="post" action="@Url.Action("Participate", "Events")">
         @Html.AntiForgeryToken()
         <input type="hidden" name="eventId" value="@Model.Id" />
