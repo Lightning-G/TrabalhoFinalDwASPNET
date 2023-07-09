@@ -155,7 +155,7 @@ namespace TrabalhoFinalDwASPNET.Controllers
         // GET: Events/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            
+
             if (id == null || _context.Events == null)
             {
                 return NotFound();
@@ -202,7 +202,7 @@ namespace TrabalhoFinalDwASPNET.Controllers
 
         private bool EventsExists(int id)
         {
-          return (_context.Events?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Events?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
         [HttpPost]
