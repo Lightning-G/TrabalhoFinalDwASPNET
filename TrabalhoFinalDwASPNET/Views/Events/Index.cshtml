@@ -4,86 +4,54 @@
     ViewData["Title"] = "Index";
 }
 
+
+<style>
+    .event-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .event {
+        width: 30%;
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .event-image {
+        width: 100%;
+        height: auto;
+        border-radius: 5px;
+    }
+
+    .event-name {
+        font-size: 18px;
+        margin-top: 10px;
+        margin-bottom: 5px;
+    }
+
+    .event-description {
+        font-size: 14px;
+    }
+</style>
+
 <h1>Index</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.host_id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.created_at)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Image)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.start_time)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.end_time)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.is_private)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.maxParticipants)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.host_id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.created_at)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Image)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.start_time)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.end_time)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.location)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.is_private)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.maxParticipants)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="event-container">
+    @foreach (var item in Model)
+    {
+        <div class="event">
+            <img src="@item.Image" alt="Event Image" class="event-image" />
+            <h2 class="event-name">@item.title</h2>
+            <div>Total Participants: @item.listaParticipants.Count / @item.maxParticipants</div>
+            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+        </div>
+    }
+</div>

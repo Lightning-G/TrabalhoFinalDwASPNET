@@ -8,27 +8,77 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Event Name</th>
-                <th>Date</th>
-                <th>Location</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var ev in Model)
-            {
-                <tr>
-                    <td>@ev.title</td>
-                    <td>@ev.start_time</td>
-                    <td>@ev.location</td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@ev.Id">Details</a> |
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+    <style>
 
+        .bots {
+            text-align: center;
+        }
+
+        .h1 {
+            text-align: center;
+        }
+
+        .event-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .event-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .event-property {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .event-value {
+            margin-top: 5px;
+        }
+    </style>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (var modelState in ViewData.ModelState.Values)
+                {
+                    foreach (var modelError in modelState.Errors)
+                    {
+                        <li>@modelError.ErrorMessage</li>
+                    }
+                }
+            </ul>
+        </div>
+    }
+
+    @foreach (var item in Model)
+    {
+        <div class="event-container">
+            <div class="event">
+                <img src="@item.Image" alt="Event Image" class="event-image" />
+                <div class="event-property">Title:</div>
+                <div class="event-value">@item.title</div>
+                <div class="event-property">Description:</div>
+                <div class="event-value">@item.Description</div>
+                <div class="event-property">Start Time:</div>
+                <div class="event-value">@item.start_time</div>
+                <div class="event-property">End Time:</div>
+                <div class="event-value">@item.end_time</div>
+                <div class="event-property">Location:</div>
+                <div class="event-value">@item.location</div>
+                <div class="event-property">Is Private:</div>
+                <div class="event-value">@item.is_private</div>
+                <div class="event-property">Max Participants:</div>
+                <div>Participating: @item.listaParticipants.Count / @item.maxParticipants</div>
+            </div>
+        </div>
+    }
+}

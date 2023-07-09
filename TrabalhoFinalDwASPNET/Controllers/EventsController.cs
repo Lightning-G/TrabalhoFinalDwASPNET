@@ -27,9 +27,21 @@ namespace TrabalhoFinalDwASPNET.Controllers
         [HttpGet("Index")]
         public async Task<IActionResult> Index()
         {
-              return _context.Events != null ? 
-                          View(await _context.Events.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Events'  is null.");
+
+
+            var events = _context.Events.ToList();
+
+            foreach (var @event in events)
+            {
+                var participants = _context.Participants
+                    .Where(p => p.EventFK == @event.Id)
+                    .ToList();
+
+                @event.listaParticipants = participants;
+            }
+
+            return View(events);
+
         }
 
         // GET: Events/Details/5
@@ -178,18 +190,56 @@ namespace TrabalhoFinalDwASPNET.Controllers
             // Get the ID of the currently logged-in user
             string userId = GetUserId();
 
-            // Create a new participant
-            var participant = new Participants
+            // Check if the user is the host of the event
+            var eventHost = await _context.Events
+                .Where(e => e.Id == eventId)
+                .Select(e => e.host_id)
+                .FirstOrDefaultAsync();
+
+            if (userId == eventHost)
             {
-                UserFK = userId,
-                EventFK = eventId
-            };
+                ModelState.AddModelError(string.Empty, "You cannot participate in your own event.");
+                var eventDetails = await _context.Events.FindAsync(eventId);
+
+                // Return Event Details view with the model and error message
+                return View("Details", eventDetails);
+            }
+            else
+            {
+                // Check the number of participants for the event
+                var participantsCount = await _context.Participants
+                    .CountAsync(p => p.EventFK == eventId);
+
+                // Get the maximum participants allowed for the event
+                var eventDetails = await _context.Events
+                    .FirstOrDefaultAsync(e => e.Id == eventId);
+
+                if (participantsCount >= eventDetails.maxParticipants)
+                {
+                    // Participants limit reached, add error to ModelState
+                    ModelState.AddModelError(string.Empty, "The maximum number of participants has been reached.");
+                }
+                else
+                {
+                    // Create a new participant
+                    var participant = new Participants
+                    {
+                        UserFK = userId,
+                        EventFK = eventId
+                    };
 
 
-            // Add the participant to the database
-            _context.Participants.Add(participant);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                    // Add the participant to the database
+                    _context.Participants.Add(participant);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                // Retrieve the event details for the Event Details view
+                var events = await _context.Events.FindAsync(eventId);
+
+                // Return Event Details view with the model and error message (if any)
+                return View("Details", events);
+            }
         }
 
         [HttpGet]

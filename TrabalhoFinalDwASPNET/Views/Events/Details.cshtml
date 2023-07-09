@@ -4,82 +4,92 @@
     ViewData["Title"] = "Details";
 }
 
+<style>
+
+    .bots {
+        text-align:center;
+    }
+
+    .h1 {
+        text-align:center;
+    }
+
+    .event-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .event-image {
+        width: 100%;
+        max-height: 400px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+
+    .event-property {
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .event-value {
+        margin-top: 5px;
+    }
+</style>
+
 <h1>Details</h1>
 
-<div>
-    <h4>Events</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.host_id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.host_id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.created_at)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.created_at)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Image)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Image)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.start_time)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.start_time)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.end_time)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.end_time)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.location)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.location)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.is_private)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.is_private)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.maxParticipants)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.maxParticipants)
-        </dd>
-    </dl>
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var modelState in ViewData.ModelState.Values)
+            {
+                foreach (var modelError in modelState.Errors)
+                {
+                    <li>@modelError.ErrorMessage</li>
+                }
+            }
+        </ul>
+    </div>
+}
+
+<div class="event-container">
+    <div class="event">
+        <img src="@Model.Image" alt="Event Image" class="event-image" />
+        <div class="event-property">Host ID:</div>
+        <div class="event-value">@Model.host_id</div>
+        <div class="event-property">Created At:</div>
+        <div class="event-value">@Model.created_at</div>
+        <div class="event-property">Title:</div>
+        <div class="event-value">@Model.title</div>
+        <div class="event-property">Description:</div>
+        <div class="event-value">@Model.Description</div>
+        <div class="event-property">Start Time:</div>
+        <div class="event-value">@Model.start_time</div>
+        <div class="event-property">End Time:</div>
+        <div class="event-value">@Model.end_time</div>
+        <div class="event-property">Location:</div>
+        <div class="event-value">@Model.location</div>
+        <div class="event-property">Is Private:</div>
+        <div class="event-value">@Model.is_private</div>
+        <div class="event-property">Max Participants:</div>
+        <div class="event-value">@Model.maxParticipants</div>
+    </div>
 </div>
 
-<form id="participateForm" method="post" action="@Url.Action("Participate", "Events")">
-    @Html.AntiForgeryToken()
-    <input type="hidden" name="eventId" value="@Model.Id" />
-    <button type="submit" class="btn btn-primary">Participate</button>
-</form>
+<div class="bots">
+    <form id="participateForm" method="post" action="@Url.Action("Participate", "Events")">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="eventId" value="@Model.Id" />
+        <button type="submit" class="btn btn-primary">Participate</button>
+    </form>
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
 </div>
+
