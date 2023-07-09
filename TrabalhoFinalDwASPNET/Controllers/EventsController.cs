@@ -103,6 +103,12 @@ namespace TrabalhoFinalDwASPNET.Controllers
             {
                 return NotFound();
             }
+
+            if (GetUserId() != events.host_id)
+            {
+                return Unauthorized();
+            }
+
             return View(events);
         }
 
@@ -116,6 +122,11 @@ namespace TrabalhoFinalDwASPNET.Controllers
             if (id != events.Id)
             {
                 return NotFound();
+            }
+
+            if (GetUserId() != events.host_id)
+            {
+                return Unauthorized();
             }
 
             if (ModelState.IsValid)
@@ -144,6 +155,7 @@ namespace TrabalhoFinalDwASPNET.Controllers
         // GET: Events/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            
             if (id == null || _context.Events == null)
             {
                 return NotFound();
@@ -154,6 +166,11 @@ namespace TrabalhoFinalDwASPNET.Controllers
             if (events == null)
             {
                 return NotFound();
+            }
+
+            if (GetUserId() != events.host_id)
+            {
+                return Unauthorized();
             }
 
             return View(events);
@@ -173,7 +190,12 @@ namespace TrabalhoFinalDwASPNET.Controllers
             {
                 _context.Events.Remove(events);
             }
-            
+
+            if (GetUserId() != events.host_id)
+            {
+                return Unauthorized();
+            }
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
