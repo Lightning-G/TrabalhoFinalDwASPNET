@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<TrabalhoFinalDwASPNET.Models.Events>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "All Events";
 }
 
 
@@ -37,10 +37,11 @@
     }
 </style>
 
-<h1>Index</h1>
+<h1>Events</h1>
 
 <p>
     <button class="btn btn-primary" onclick="location.href='@Url.Action("Create", "Events")'">Create Your Own Event</button>
+    <button class="btn btn-primary" onclick="location.href='@Url.Action("EventsParticipating", "Events")'">Events You are Participating</button>
 </p>
 <div class="event-container">
     @foreach (var item in Model)

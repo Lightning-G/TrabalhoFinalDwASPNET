@@ -35,6 +35,14 @@
         border-radius: 5px;
     }
 
+    .base {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50vh;
+        flex-direction: column;
+        text-align: center;
+    }
 
 </style>
 
@@ -44,7 +52,11 @@
 
 @if (Model.Count == 0)
 {
-    <p>No events found.</p>
+    <div class="base">
+        <h3>You are not participating on any events.</h3>
+        <h4>PARTICIPATE NOW!</h4>
+        <button class="btn btn-primary mt-2" onclick=" location.href='@Url.Action("Index", "Events")' ">CHECK EVENTS</button>
+    </div>
 }
 else
 {
@@ -65,8 +77,14 @@ else
                 <div class="event-value">@item.location</div>
                 <div class="event-property">Is Private:</div>
                 <div class="event-value">@item.is_private</div>
-                <div>Participating: @item.listaParticipants.Count / @item.maxParticipants</div>
-            </div><br /><br />
+                <div class="event-property">Participating:</div>
+                <div class="event-value">@item.listaParticipants.Count / @item.maxParticipants</div>
+                <button class="btn btn-warning mt-2" onclick="location.href='/Events/Details/@item.Id'">Details</button>
+            </div>
+
+            <br />
+
+            <br />
         }
     </div>
 }
