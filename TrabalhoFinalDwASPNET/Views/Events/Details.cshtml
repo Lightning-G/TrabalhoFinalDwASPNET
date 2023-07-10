@@ -7,11 +7,11 @@
 <style>
 
     .bots {
-        text-align:center;
+        text-align: center;
     }
 
     .h1 {
-        text-align:center;
+        text-align: center;
     }
 
     .event-container {
@@ -56,7 +56,9 @@
         </ul>
     </div>
 }
-
+<div>
+    <button class="btn btn-secondary mt-3" onclick="location.href='@Url.Action("Index", "Events")'">Back to List</button>
+</div>
 <div class="event-container">
     <div class="event">
         <img src="@Model.Image" alt="Event Image" class="event-image" />
@@ -78,19 +80,13 @@
         <div class="event-value">@Model.is_private</div>
         <div class="event-property">Max Participants:</div>
         <div class="event-value">@Model.maxParticipants</div>
+        <br />
+        <form id="participateForm" method="post" action="@Url.Action("Participate", "Events")">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="eventId" value="@Model.Id" />
+            <button type="submit" class="btn btn-primary">Participate</button>
+        </form>
     </div>
 </div>
 
-<div class="bots">
-    <br />
-    <form id="participateForm" method="post" action="@Url.Action("Participate", "Events")">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="eventId" value="@Model.Id" />
-        <button type="submit" class="btn btn-primary">Participate</button>
-    </form>
-
-    <div>
-        <a asp-action="Index">Back to List</a>
-    </div>
-</div>
 

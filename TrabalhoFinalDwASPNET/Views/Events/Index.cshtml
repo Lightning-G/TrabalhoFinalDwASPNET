@@ -40,7 +40,7 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create Your Own Event</a>
+    <button class="btn btn-primary" onclick="location.href='@Url.Action("Create", "Events")'">Create Your Own Event</button>
 </p>
 <div class="event-container">
     @foreach (var item in Model)
@@ -49,7 +49,8 @@
             <img src="@item.Image" alt="Event Image" class="event-image" />
             <h2 class="event-name">@item.title</h2>
             <div>Total Participants: @item.listaParticipants.Count / @item.maxParticipants</div>
-            <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+            <button class="btn btn-warning mt-2" onclick="location.href='/Events/Details/@item.Id'">Details</button>
+
         </div>
     }
 </div>

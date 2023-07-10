@@ -2,9 +2,14 @@
 
 <h2>My Events</h2>
 
+
+<p>
+    <button class="btn btn-primary"  onclick="location.href='@Url.Action("Create", "Events")'">Create a New Event</button>
+</p>
+
 @if (Model.Count == 0)
 {
-    <p>No events created yet.</p>
+    <p>You haven't created any events yet.</p>
 }
 else
 {
@@ -60,9 +65,6 @@ else
     }
 
 
-    <p>
-        <a asp-action="Create">Create a New Event</a>
-    </p>
 
     @foreach (var item in Model)
     {
@@ -84,8 +86,8 @@ else
                 <div class="event-property">Max Participants:</div>
                 <div>Participating: @item.listaParticipants.Count / @item.maxParticipants</div>
             </div>
-            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            <button class="btn btn-warning mt-2" onclick="location.href='/Events/Edit/@item.Id'">Edit</button>
+            <button class="btn btn-danger mt-2" onclick="location.href='/Events/Delete/@item.Id'">Delete</button>
         </div><br />
     }
 }

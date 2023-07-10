@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using TrabalhoFinalDwASPNET.Data;
 using TrabalhoFinalDwASPNET.Models;
 
@@ -218,6 +219,15 @@ namespace TrabalhoFinalDwASPNET.Controllers
                 .Select(e => e.host_id)
                 .FirstOrDefaultAsync();
 
+            if (IsParticipating(eventId).Result)
+            {
+                ModelState.AddModelError(string.Empty, "You are already participating in this event.");
+                var eventDetails = await _context.Events.FindAsync(eventId);
+
+                // Return Event Details view with the model and error message
+                return View("Details", eventDetails);
+            }
+
             if (userId == eventHost)
             {
                 ModelState.AddModelError(string.Empty, "You cannot participate in your own event.");
@@ -282,6 +292,17 @@ namespace TrabalhoFinalDwASPNET.Controllers
         {
             var userId = _userManager.GetUserId(User);
             return userId;
+        }
+
+        public async Task<bool> IsParticipating(int eventId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var eventHosts = await _context.Participants
+                .Where(e => e.UserFK == userId)
+                .Select(e => e.EventFK)
+                .ToListAsync();
+
+            return eventHosts.Contains(eventId);
         }
     }
 }
