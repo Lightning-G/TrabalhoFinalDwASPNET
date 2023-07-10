@@ -1,0 +1,73 @@
+﻿@model List<TrabalhoFinalDwASPNET.Models.Events>
+
+<style>
+
+    .title {
+        text-align: center;
+    }
+
+    .event-property {
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .event-value {
+        margin-top: 5px;
+    }
+
+    .event-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .event {
+        width: 30%;
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .event-image {
+        width: 100%;
+        height: auto;
+        border-radius: 5px;
+    }
+
+
+</style>
+
+<div class="title">
+    <h2>Participating Events</h2><br />
+</div>
+
+@if (Model.Count == 0)
+{
+    <p>No events found.</p>
+}
+else
+{
+    <div class="event-container">
+        @foreach (var item in Model)
+        {
+            <div class="event">
+                <img src="@item.Image" alt="Event Image" class="event-image" />
+                <div class="event-property">Title:</div>
+                <div class="event-value">@item.title</div>
+                <div class="event-property">Description:</div>
+                <div class="event-value">@item.Description</div>
+                <div class="event-property">Start Time:</div>
+                <div class="event-value">@item.start_time</div>
+                <div class="event-property">End Time:</div>
+                <div class="event-value">@item.end_time</div>
+                <div class="event-property">Location:</div>
+                <div class="event-value">@item.location</div>
+                <div class="event-property">Is Private:</div>
+                <div class="event-value">@item.is_private</div>
+                <div>Participating: @item.listaParticipants.Count / @item.maxParticipants</div>
+            </div><br /><br />
+        }
+    </div>
+}
+

@@ -304,5 +304,20 @@ namespace TrabalhoFinalDwASPNET.Controllers
 
             return eventHosts.Contains(eventId);
         }
+
+        [HttpGet]
+        public IActionResult EventsParticipating()
+        {
+            // Get the ID of the currently logged-in user
+            string userId = GetUserId();
+
+            // Query the database to retrieve the events that the user is participating in
+            var events = _context.Participants
+                .Where(p => p.UserFK == userId)
+                .Select(p => p.Event)
+                .ToList();
+
+            return View(events);
+        }
     }
 }
