@@ -1,4 +1,7 @@
 ﻿@model TrabalhoFinalDwASPNET.Models.Events
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
 @{
     ViewData["Title"] = "Details";
@@ -84,7 +87,16 @@
         <form id="participateForm" method="post" action="@Url.Action("Participate", "Events")">
             @Html.AntiForgeryToken()
             <input type="hidden" name="eventId" value="@Model.Id" />
-            <button type="submit" class="btn btn-primary">Participate</button>
+            @if (!SignInManager.IsSignedIn(User))
+            {
+                <h4>Login to participate</h4>
+                <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            }
+            else
+            {
+                <button type="submit" class="btn btn-primary">Participate</button>
+            }
+
         </form>
     </div>
 </div><br /><br />

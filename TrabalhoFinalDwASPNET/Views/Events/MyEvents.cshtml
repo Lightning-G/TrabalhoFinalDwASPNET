@@ -1,93 +1,122 @@
 ﻿@model List<Events>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
-<h2>My Events</h2>
-
-
-<p>
-    <button class="btn btn-primary"  onclick="location.href='@Url.Action("Create", "Events")'">Create a New Event</button>
-</p>
-
-@if (Model.Count == 0)
-{
-    <p>You haven't created any events yet.</p>
-}
-else
-{
-    <style>
-
-        .bots {
-            text-align: center;
-        }
-
-        .h1 {
-            text-align: center;
-        }
-
-        .event-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            text-align: center;
-        }
-
-        .event-image {
-            width: 100%;
-            max-height: 400px;
-            object-fit: cover;
-            border-radius: 5px;
-        }
-
-        .event-property {
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
-        .event-value {
-            margin-top: 5px;
-        }
-    </style>
-
-    @if (!ViewData.ModelState.IsValid)
-    {
-        <div class="alert alert-danger">
-            <ul>
-                @foreach (var modelState in ViewData.ModelState.Values)
-                {
-                    foreach (var modelError in modelState.Errors)
-                    {
-                        <li>@modelError.ErrorMessage</li>
-                    }
-                }
-            </ul>
-        </div>
+<style>
+    .base {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50vh;
+        flex-direction: column;
+        text-align: center;
     }
 
+</style>
 
 
-    @foreach (var item in Model)
+@if (!SignInManager.IsSignedIn(User))
+{
+    <div class="base">
+        <h4>LOGIN OR REGISTER TO PARTICIPATE!</h4>
+        <a class="btn btn-primary mb-2" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        <a class="btn btn-secondary" asp-area="Identity" asp-page="/Account/Register">Register</a>
+
+    </div>
+}else
+{
+
+    <h2>My Events</h2>
+
+
+    <p>
+        <button class="btn btn-primary" onclick="location.href='@Url.Action("Create", "Events")'">Create a New Event</button>
+    </p>
+
+    @if (Model.Count == 0)
     {
-        <div class="event-container">
-            <div class="event">
-                <img src="@item.Image" alt="Event Image" class="event-image" />
-                <div class="event-property">Title:</div>
-                <div class="event-value">@item.title</div>
-                <div class="event-property">Description:</div>
-                <div class="event-value">@item.Description</div>
-                <div class="event-property">Start Time:</div>
-                <div class="event-value">@item.start_time</div>
-                <div class="event-property">End Time:</div>
-                <div class="event-value">@item.end_time</div>
-                <div class="event-property">Location:</div>
-                <div class="event-value">@item.location</div>
-                <div class="event-property">Is Private:</div>
-                <div class="event-value">@item.is_private</div>
-                <div class="event-property">Max Participants:</div>
-                <div>Participating: @item.listaParticipants.Count / @item.maxParticipants</div>
+        <p>You haven't created any events yet.</p>
+    }
+    else
+    {
+        <style>
+
+            .bots {
+                text-align: center;
+            }
+
+            .h1 {
+                text-align: center;
+            }
+
+            .event-container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                text-align: center;
+            }
+
+            .event-image {
+                width: 100%;
+                max-height: 400px;
+                object-fit: cover;
+                border-radius: 5px;
+            }
+
+            .event-property {
+                font-weight: bold;
+                margin-top: 10px;
+            }
+
+            .event-value {
+                margin-top: 5px;
+            }
+        </style>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach (var modelState in ViewData.ModelState.Values)
+                    {
+                        foreach (var modelError in modelState.Errors)
+                        {
+                            <li>@modelError.ErrorMessage</li>
+                        }
+                    }
+                </ul>
             </div>
-            <button class="btn btn-warning mt-2" onclick="location.href='/Events/Edit/@item.Id'">Edit</button>
-            <button class="btn btn-danger mt-2" onclick="location.href='/Events/Delete/@item.Id'">Delete</button>
-        </div><br />
+        }
+
+
+
+        @foreach (var item in Model)
+        {
+            <div class="event-container">
+                <div class="event">
+                    <img src="@item.Image" alt="Event Image" class="event-image" />
+                    <div class="event-property">Title:</div>
+                    <div class="event-value">@item.title</div>
+                    <div class="event-property">Description:</div>
+                    <div class="event-value">@item.Description</div>
+                    <div class="event-property">Start Time:</div>
+                    <div class="event-value">@item.start_time</div>
+                    <div class="event-property">End Time:</div>
+                    <div class="event-value">@item.end_time</div>
+                    <div class="event-property">Location:</div>
+                    <div class="event-value">@item.location</div>
+                    <div class="event-property">Is Private:</div>
+                    <div class="event-value">@item.is_private</div>
+                    <div class="event-property">Max Participants:</div>
+                    <div>Participating: @item.listaParticipants.Count / @item.maxParticipants</div>
+                </div>
+                <button class="btn btn-warning mt-2" onclick="location.href='/Events/Edit/@item.Id'">Edit</button>
+                <button class="btn btn-danger mt-2" onclick="location.href='/Events/Delete/@item.Id'">Delete</button>
+            </div>
+            <br />
+        }
     }
 }

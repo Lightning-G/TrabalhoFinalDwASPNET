@@ -1,80 +1,116 @@
 ﻿@model TrabalhoFinalDwASPNET.Models.Events
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<style>
 
-<h4>Events</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="host_id" class="control-label"></label>
-                <input asp-for="host_id" class="form-control" />
-                <span asp-validation-for="host_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="created_at" class="control-label"></label>
-                <input asp-for="created_at" class="form-control" />
-                <span asp-validation-for="created_at" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="title" class="control-label"></label>
-                <input asp-for="title" class="form-control" />
-                <span asp-validation-for="title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="start_time" class="control-label"></label>
-                <input asp-for="start_time" class="form-control" />
-                <span asp-validation-for="start_time" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="end_time" class="control-label"></label>
-                <input asp-for="end_time" class="form-control" />
-                <span asp-validation-for="end_time" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="location" class="control-label"></label>
-                <input asp-for="location" class="form-control" />
-                <span asp-validation-for="location" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="is_private" /> @Html.DisplayNameFor(model => model.is_private)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="maxParticipants" class="control-label"></label>
-                <input asp-for="maxParticipants" class="form-control" />
-                <span asp-validation-for="maxParticipants" class="text-danger"></span>
-            </div>
-            <br />
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+    .row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 50px;
+    }
+
+    .base {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50vh;
+        flex-direction: column;
+        text-align: center;
+    }
+
+</style>
+
+@if (!SignInManager.IsSignedIn(User))
+{
+    <div class="base">
+        <h4>YOU NEED TO BE LOGED IN TO EDIT EVENTS!</h4>
+        <a class="btn btn-primary mb-2" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        <a class="btn btn-secondary" asp-area="Identity" asp-page="/Account/Register">Register</a>
     </div>
-</div>
+}
+else
+{
+        <h1>Edit</h1>
 
-<div>
-    <button class="btn btn-secondary mt-3" onclick="location.href='@Url.Action("MyEvents", "Events")'">Back to List</button>
-</div>
+        <h4>Events</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <label asp-for="host_id" class="control-label"></label>
+                        <input asp-for="host_id" class="form-control" />
+                        <span asp-validation-for="host_id" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="created_at" class="control-label"></label>
+                        <input asp-for="created_at" class="form-control" />
+                        <span asp-validation-for="created_at" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="title" class="control-label"></label>
+                        <input asp-for="title" class="form-control" />
+                        <span asp-validation-for="title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label"></label>
+                        <input asp-for="Description" class="form-control" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Image" class="control-label"></label>
+                        <input asp-for="Image" class="form-control" />
+                        <span asp-validation-for="Image" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="start_time" class="control-label"></label>
+                        <input asp-for="start_time" class="form-control" />
+                        <span asp-validation-for="start_time" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="end_time" class="control-label"></label>
+                        <input asp-for="end_time" class="form-control" />
+                        <span asp-validation-for="end_time" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="location" class="control-label"></label>
+                        <input asp-for="location" class="form-control" />
+                        <span asp-validation-for="location" class="text-danger"></span>
+                    </div>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="is_private" /> @Html.DisplayNameFor(model => model.is_private)
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="maxParticipants" class="control-label"></label>
+                        <input asp-for="maxParticipants" class="form-control" />
+                        <span asp-validation-for="maxParticipants" class="text-danger"></span>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <button class="btn btn-secondary mt-3" onclick="location.href='@Url.Action("MyEvents", "Events")'">Back to List</button>
+        </div>
+}
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

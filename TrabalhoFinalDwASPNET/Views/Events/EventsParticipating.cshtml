@@ -49,10 +49,6 @@
 
 </style>
 
-<div class="title">
-    <h2>Participating Events</h2><br />
-</div>
-
 @if (!SignInManager.IsSignedIn(User))
 {
     <div class="base">
@@ -64,6 +60,10 @@
 }
 else
 {
+    <div class="title">
+        <h2>Participating Events</h2><br />
+    </div>
+
     @if (Model.Count == 0)
     {
         <div class="base">
