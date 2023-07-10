@@ -1,4 +1,7 @@
 ﻿@model List<TrabalhoFinalDwASPNET.Models.Events>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
 <style>
 
@@ -50,42 +53,55 @@
     <h2>Participating Events</h2><br />
 </div>
 
-@if (Model.Count == 0)
+@if (!SignInManager.IsSignedIn(User))
 {
     <div class="base">
-        <h3>You are not participating on any events.</h3>
-        <h4>PARTICIPATE NOW!</h4>
-        <button class="btn btn-primary mt-2" onclick=" location.href='@Url.Action("Index", "Events")' ">CHECK EVENTS</button>
+        <h4>LOGIN OR REGISTER TO PARTICIPATE!</h4>
+        <a class="btn btn-primary mb-2" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        <a class="btn btn-secondary" asp-area="Identity" asp-page="/Account/Register">Register</a>
+
     </div>
 }
 else
 {
-    <div class="event-container">
-        @foreach (var item in Model)
-        {
-            <div class="event">
-                <img src="@item.Image" alt="Event Image" class="event-image" />
-                <div class="event-property">Title:</div>
-                <div class="event-value">@item.title</div>
-                <div class="event-property">Description:</div>
-                <div class="event-value">@item.Description</div>
-                <div class="event-property">Start Time:</div>
-                <div class="event-value">@item.start_time</div>
-                <div class="event-property">End Time:</div>
-                <div class="event-value">@item.end_time</div>
-                <div class="event-property">Location:</div>
-                <div class="event-value">@item.location</div>
-                <div class="event-property">Is Private:</div>
-                <div class="event-value">@item.is_private</div>
-                <div class="event-property">Participating:</div>
-                <div class="event-value">@item.listaParticipants.Count / @item.maxParticipants</div>
-                <button class="btn btn-warning mt-2" onclick="location.href='/Events/Details/@item.Id'">Details</button>
-            </div>
+    @if (Model.Count == 0)
+    {
+        <div class="base">
+            <h3>You are not participating on any events.</h3>
+            <h4>PARTICIPATE NOW!</h4>
+            <button class="btn btn-primary mt-2" onclick=" location.href='@Url.Action("Index", "Events")' ">CHECK EVENTS</button>
+        </div>
+    }
+    else
+    {
+        <div class="event-container">
+            @foreach (var item in Model)
+            {
+                <div class="event">
+                    <img src="@item.Image" alt="Event Image" class="event-image" />
+                    <div class="event-property">Title:</div>
+                    <div class="event-value">@item.title</div>
+                    <div class="event-property">Description:</div>
+                    <div class="event-value">@item.Description</div>
+                    <div class="event-property">Start Time:</div>
+                    <div class="event-value">@item.start_time</div>
+                    <div class="event-property">End Time:</div>
+                    <div class="event-value">@item.end_time</div>
+                    <div class="event-property">Location:</div>
+                    <div class="event-value">@item.location</div>
+                    <div class="event-property">Is Private:</div>
+                    <div class="event-value">@item.is_private</div>
+                    <div class="event-property">Participating:</div>
+                    <div class="event-value">@item.listaParticipants.Count / @item.maxParticipants</div>
+                    <button class="btn btn-warning mt-2" onclick="location.href='/Events/Details/@item.Id'">Details</button>
+                </div>
 
-            <br />
+                <br />
 
-            <br />
-        }
-    </div>
+                <br />
+            }
+        </div>
+    }
 }
+
 
