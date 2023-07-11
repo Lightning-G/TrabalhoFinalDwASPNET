@@ -285,6 +285,16 @@ namespace TrabalhoFinalDwASPNET.Controllers
                 .Where(e => e.host_id == userId)
                 .ToListAsync();
 
+            // Populate the listaParticipants property for each event
+            foreach (var evnt in myEvents)
+            {
+                var participants = await _context.Participants
+                    .Where(p => p.EventFK == evnt.Id)
+                    .ToListAsync();
+
+                evnt.listaParticipants = participants;
+            }
+
             return View(myEvents);
         }
 
@@ -316,6 +326,15 @@ namespace TrabalhoFinalDwASPNET.Controllers
                 .Where(p => p.UserFK == userId)
                 .Select(p => p.Event)
                 .ToList();
+
+            // Populate the listaParticipants property for each event
+            foreach (var evnt in events)
+            {
+                evnt.listaParticipants = _context.Participants
+                    .Where(p => p.EventFK == evnt.Id)
+                    .ToList();
+            }
+
 
             return View(events);
         }
