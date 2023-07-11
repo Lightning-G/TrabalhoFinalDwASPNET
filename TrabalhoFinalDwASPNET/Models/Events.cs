@@ -50,8 +50,7 @@ namespace TrabalhoFinalDwASPNET.Models
         /// </summary>
         [Required(ErrorMessage = "A data inicial é de preenchimento obrigatório")]
         [Display(Name = "Data Inicial")]
-        ///[RegularExpression(@"^(0[1-9]|[1-2][0-9]|3[01])/(0[1-9]|1[0-2])/(202[3-9]|2030)$")]
-        [RegularExpression(@"^(\d{2})/(\d{2})/(\d{4}) (\d{2}):(\d{2})$", ErrorMessage = "Invalid date and time format. Use dd/MM/yyyy HH:mm")]
+        //[RegularExpression(@"^(\d{2})/(\d{2})/(\d{4}) (\d{2}):(\d{2})$", ErrorMessage = "Invalid date and time format. Use dd/MM/yyyy HH:mm")]
         public DateTime start_time { get; set; }
 
         /// <summary>
@@ -59,7 +58,7 @@ namespace TrabalhoFinalDwASPNET.Models
         /// </summary>
         [Required(ErrorMessage = "A data final é de preenchimento obrigatório")]
         ///[RegularExpression(@"^(0[1-9]|[1-2][0-9]|3[01])/(0[1-9]|1[0-2])/(202[3-9]|2030)$")]
-        [RegularExpression(@"^(\d{2})/(\d{2})/(\d{4}) (\d{2}):(\d{2})$", ErrorMessage = "Invalid date and time format. Use dd/MM/yyyy HH:mm")]
+        //[RegularExpression(@"^(\d{2})/(\d{2})/(\d{4}) (\d{2}):(\d{2})$", ErrorMessage = "Invalid date and time format. Use dd/MM/yyyy HH:mm")]
         public DateTime end_time { get; set; }
 
 

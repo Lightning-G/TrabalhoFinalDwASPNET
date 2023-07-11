@@ -219,25 +219,32 @@ namespace TrabalhoFinalDwASPNET.Controllers
                 .Select(e => e.host_id)
                 .FirstOrDefaultAsync();
 
+            var eventD = await _context.Events.FindAsync(eventId);
+
             if (IsParticipating(eventId).Result)
             {
                 ModelState.AddModelError(string.Empty, "You are already participating in this event.");
-                var eventDetails = await _context.Events.FindAsync(eventId);
 
                 // Return Event Details view with the model and error message
-                return View("Details", eventDetails);
+                return View("Details", eventD);
             }
 
             if (userId == eventHost)
             {
                 ModelState.AddModelError(string.Empty, "You cannot participate in your own event.");
-                var eventDetails = await _context.Events.FindAsync(eventId);
 
                 // Return Event Details view with the model and error message
-                return View("Details", eventDetails);
+                return View("Details", eventD);
             }
             else
             {
+                if (eventD.is_private)
+                {
+                    ModelState.AddModelError(string.Empty, "You can't participate in private events.");
+
+                    // Return Event Details view with the model and error message
+                    return View("Details", eventD);
+                }
                 // Check the number of participants for the event
                 var participantsCount = await _context.Participants
                     .CountAsync(p => p.EventFK == eventId);
