@@ -84,9 +84,18 @@ namespace TrabalhoFinalDwASPNET.Controllers
                 events.host_id = userId;
                 events.created_at = DateTime.Now;
 
-                _context.Add(events);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (events.end_time < events.start_time)
+                {
+                    ModelState.AddModelError("end_time", "End time cannot be smaller than start time.");
+                    return View(events);
+                }
+                else
+                {
+
+                    _context.Add(events);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
             return View(events);
         }
@@ -229,7 +238,16 @@ namespace TrabalhoFinalDwASPNET.Controllers
                 return View("Details", eventD);
             }
 
-            if (userId == eventHost)
+            else if (DateTime.Now > eventD.start_time)
+            {
+                ModelState.AddModelError(string.Empty, "This event has already started. Participation is no longer available.");
+
+                // Return Event Details view with the model and error message
+                return View("Details", eventD);
+            }
+
+
+            else if (userId == eventHost)
             {
                 ModelState.AddModelError(string.Empty, "You cannot participate in your own event.");
 
