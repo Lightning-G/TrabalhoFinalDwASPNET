@@ -4,11 +4,10 @@
 @inject UserManager<IdentityUser> UserManager
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes";
 }
 
 <style>
-
     .bots {
         text-align: center;
     }
@@ -43,7 +42,7 @@
     }
 </style>
 
-<h1>Details</h1>
+<h1>Detalhes</h1>
 
 @if (!ViewData.ModelState.IsValid)
 {
@@ -60,22 +59,22 @@
     </div>
 }
 <div>
-    <button class="btn btn-secondary mt-3" onclick="location.href='@Url.Action("Index", "Events")'">Go Back</button>
+    <button class="btn btn-secondary mt-3" onclick="location.href='@Url.Action("Index", "Events")'">Voltar</button>
 </div>
 <div class="event-container">
     <div class="event">
-        <img src="@Model.Image" alt="Event Image" class="event-image" />
-        <div class="event-property">Title:</div>
+        <img src="@Model.Image" alt="Imagem do Evento" class="event-image" />
+        <div class="event-property">Título:</div>
         <div class="event-value">@Model.title</div>
-        <div class="event-property">Description:</div>
+        <div class="event-property">Descrição:</div>
         <div class="event-value">@Model.Description</div>
-        <div class="event-property">Start Time:</div>
+        <div class="event-property">Hora de Início:</div>
         <div class="event-value">@Model.start_time</div>
-        <div class="event-property">End Time:</div>
+        <div class="event-property">Hora de Término:</div>
         <div class="event-value">@Model.end_time</div>
-        <div class="event-property">Location:</div>
+        <div class="event-property">Localização:</div>
         <div class="event-value">@Model.location</div>
-        <div class="event-property">Max Participants:</div>
+        <div class="event-property">Máximo de Participantes:</div>
         <div class="event-value">@Model.maxParticipants</div>
         <br />
         <form id="participateForm" method="post" action="@Url.Action("Participate", "Events")">
@@ -83,16 +82,16 @@
             <input type="hidden" name="eventId" value="@Model.Id" />
             @if (!SignInManager.IsSignedIn(User))
             {
-                <h4>Login to participate</h4>
-                <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                <h4>Entre para participar</h4>
+                <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Login">Entrar</a>
             }
             else
             {
-                <button type="submit" class="btn btn-primary">Participate</button>
+                <button type="submit" class="btn btn-primary">Participar</button>
             }
 
         </form>
     </div>
-</div><br /><br />
-
-
+</div>
+<br />
+<br />

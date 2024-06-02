@@ -4,11 +4,10 @@
 @inject UserManager<IdentityUser> UserManager
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Criar";
 }
 
 <style>
-
     .row {
         display: flex;
         justify-content: center;
@@ -24,26 +23,25 @@
         flex-direction: column;
         text-align: center;
     }
-
 </style>
 
 @if (!SignInManager.IsSignedIn(User))
 {
     <div class="base">
-        <h4>LOGIN OR REGISTER TO CREATE EVENTS!</h4>
-        <a class="btn btn-primary mb-2" asp-area="Identity" asp-page="/Account/Login">Login</a>
-        <a class="btn btn-secondary" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        <h4>ENTRE OU REGISTRE-SE PARA CRIAR EVENTOS!</h4>
+        <a class="btn btn-primary mb-2" asp-area="Identity" asp-page="/Account/Login">Entrar</a>
+        <a class="btn btn-secondary" asp-area="Identity" asp-page="/Account/Register">Registrar</a>
     </div>
 }
 else
 {
 
-    <h1>Create</h1>
+    <h1>Criar</h1>
 
-    <h4>Events</h4>
+    <h4>Eventos</h4>
     <hr />
     <div>
-        <button class="btn btn-secondary mt-2" onclick="location.href='@Url.Action("MyEvents", "Events")'">Go Back</button>
+        <button class="btn btn-secondary mt-2" onclick="location.href='@Url.Action("MyEvents", "Events")'">Voltar</button>
     </div>
     <div class="row">
         <div class="col-md-4">
@@ -98,7 +96,7 @@ else
                     <span asp-validation-for="maxParticipants" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-primary mt-3" />
+                    <input type="submit" value="Criar" class="btn btn-primary mt-3" />
                 </div>
             </form>
         </div>
@@ -109,4 +107,4 @@ else
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    }
+}
