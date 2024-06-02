@@ -2,11 +2,10 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Entrar";
 }
 
 <style>
-
     .row {
         display: flex;
         justify-content: center;
@@ -14,6 +13,13 @@
         margin-top: 50px;
     }
 
+    .form-floating {
+        margin-bottom: 1rem;
+    }
+
+    #login-submit {
+        margin-top: 1rem;
+    }
 </style>
 
 <h1>@ViewData["Title"]</h1>
@@ -21,25 +27,25 @@
     <div class="col-md-4">
         <section>
             <form id="account" method="post">
-                <h2>Use a local account to log in.</h2>
+                <h2>Use uma conta local para entrar.</h2>
                 <hr />
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-floating mb-2">
                     <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
-                    <label asp-for="Input.Email" class="form-label"></label>
+                    <label asp-for="Input.Email" class="form-label">Email</label>
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
                 <div class="form-floating mb-3">
                     <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
-                    <label asp-for="Input.Password" class="form-label"></label>
+                    <label asp-for="Input.Password" class="form-label">Senha</label>
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
                 <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Entrar</button>
                 </div>
                 <div>
                     <p>
-                        <a id="forgot-password" asp-page="./Register">Don't have an account?</a>
+                        <a id="forgot-password" asp-page="./Register">Não tem uma conta?</a>
                     </p>
                 </div>
             </form>
