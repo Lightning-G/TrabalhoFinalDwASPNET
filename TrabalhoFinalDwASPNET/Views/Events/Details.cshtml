@@ -5,6 +5,7 @@
 
 @{
     ViewData["Title"] = "Detalhes";
+    var isParticipating = ViewBag.IsParticipating as bool? ?? false;
 }
 
 <style>
@@ -77,7 +78,7 @@
         <div class="event-property">Máximo de Participantes:</div>
         <div class="event-value">@Model.maxParticipants</div>
         <br />
-        <form id="participateForm" method="post" action="@Url.Action("Participate", "Events")">
+        <form id="participateForm" method="post" action="@Url.Action(isParticipating ? "Desparticipate" : "Participate", "Events")">
             @Html.AntiForgeryToken()
             <input type="hidden" name="eventId" value="@Model.Id" />
             @if (!SignInManager.IsSignedIn(User))
@@ -87,9 +88,15 @@
             }
             else
             {
-                <button type="submit" class="btn btn-primary">Participar</button>
+                @if (isParticipating)
+                {
+                    <button type="submit" class="btn btn-danger">Desparticipar</button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-primary">Participar</button>
+                }
             }
-
         </form>
     </div>
 </div>

@@ -60,6 +60,16 @@ namespace TrabalhoFinalDwASPNET.Controllers
                 return NotFound();
             }
 
+            var user = await _userManager.GetUserAsync(User);
+            bool isParticipating = false;
+
+            if (user != null)
+            {
+                isParticipating = _context.Participants.Any(p => p.EventFK == id && p.UserFK == user.Id);
+            }
+
+            ViewBag.IsParticipating = isParticipating;
+
             return View(events);
         }
 
@@ -297,6 +307,31 @@ namespace TrabalhoFinalDwASPNET.Controllers
                 // Return Event Details view with the model and error message (if any)
                 return View("Details", events);
             }
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Desparticipate(int eventId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var participation = await _context.Participants
+                .FirstOrDefaultAsync(p => p.EventFK == eventId && p.UserFK == user.Id);
+
+            if (participation == null)
+            {
+                return NotFound("You are not participating in this event.");
+            }
+
+            _context.Participants.Remove(participation);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", "Events", new { id = eventId });
         }
 
         [HttpGet]
