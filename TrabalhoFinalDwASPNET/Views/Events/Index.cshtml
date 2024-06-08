@@ -37,6 +37,45 @@
     .event-description {
         font-size: 14px;
     }
+
+    .event-description {
+        font-size: 14px;
+    }
+
+    .tag-container {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    .tag {
+        background-color: #f2f2f2;
+        color: #333;
+        border-radius: 5px;
+        padding: 5px 10px;
+        margin: 2px;
+        font-size: 12px;
+    }
+
+    .tag-color-1 {
+        background-color: #ff9999;
+    }
+
+    .tag-color-2 {
+        background-color: #99ccff;
+    }
+
+    .tag-color-3 {
+        background-color: #99ff99;
+    }
+
+    .tag-color-4 {
+        background-color: #ffcc99;
+    }
+
+    .tag-color-5 {
+        background-color: #cc99ff;
+    }
 </style>
 
 <h1>Eventos</h1>
@@ -54,7 +93,19 @@
         <div class="event">
             <img src="@item.Image" alt="Imagem do Evento" class="event-image" />
             <h2 class="event-name">@item.title</h2>
-            <div>Participantes Totais: @item.listaParticipants.Count / @item.maxParticipants</div>
+            <div>Participantes Totais: @item.ListaParticipants.Count / @item.maxParticipants</div>
+
+            <div class="tag-container">
+                @{
+                    var tagIndex = 1;
+                    foreach (var eventTag in item.EventTags)
+                    {
+                        var tag = eventTag.Tag;
+                        <div class="tag tag-color-@tagIndex">@tag.Name</div>
+                        tagIndex = tagIndex > 4 ? 1 : tagIndex + 1;
+                    }
+                }
+            </div>
             <button class="btn btn-warning mt-2" onclick="location.href='/Events/Details/@item.Id'">Detalhes</button>
         </div>
     }

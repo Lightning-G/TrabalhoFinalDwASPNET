@@ -2,12 +2,10 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
-
 @{
     ViewData["Title"] = "Detalhes";
     var isParticipating = ViewBag.IsParticipating as bool? ?? false;
 }
-
 <style>
     .bots {
         text-align: center;
@@ -41,10 +39,44 @@
     .event-value {
         margin-top: 5px;
     }
+
+    .tag-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .tag {
+        background-color: #f2f2f2;
+        color: #333;
+        border-radius: 5px;
+        padding: 5px 10px;
+        margin: 5px;
+        font-size: 14px;
+    }
+
+    .tag-color-1 {
+        background-color: #ff9999;
+    }
+
+    .tag-color-2 {
+        background-color: #99ccff;
+    }
+
+    .tag-color-3 {
+        background-color: #99ff99;
+    }
+
+    .tag-color-4 {
+        background-color: #ffcc99;
+    }
+
+    .tag-color-5 {
+        background-color: #cc99ff;
+    }
 </style>
-
 <h1>Detalhes</h1>
-
 @if (!ViewData.ModelState.IsValid)
 {
     <div class="alert alert-danger">
@@ -77,6 +109,19 @@
         <div class="event-value">@Model.location</div>
         <div class="event-property">Máximo de Participantes:</div>
         <div class="event-value">@Model.maxParticipants</div>
+
+        <div class="tag-container">
+            @{
+                var tagIndex = 1;
+                foreach (var eventTag in Model.EventTags)
+                {
+                    var tag = eventTag.Tag;
+                    <div class="tag tag-color-@tagIndex">@tag.Name</div>
+                    tagIndex = tagIndex > 4 ? 1 : tagIndex + 1;
+                }
+            }
+        </div>
+
         <br />
         <form id="participateForm" method="post" action="@Url.Action(isParticipating ? "Desparticipate" : "Participate", "Events")">
             @Html.AntiForgeryToken()

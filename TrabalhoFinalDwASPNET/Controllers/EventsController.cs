@@ -8,10 +8,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TrabalhoFinalDwASPNET.Data;
+using TrabalhoFinalDwASPNET.Data.Migrations;
 using TrabalhoFinalDwASPNET.Models;
 
 namespace TrabalhoFinalDwASPNET.Controllers
+
 {
+    using ModelsTags = TrabalhoFinalDwASPNET.Models.Tags;
     public class EventsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -28,21 +31,21 @@ namespace TrabalhoFinalDwASPNET.Controllers
         [HttpGet("Index")]
         public async Task<IActionResult> Index()
         {
-
-
-            var events = _context.Events.ToList();
+            var events = await _context.Events
+                .Include(e => e.EventTags)
+                    .ThenInclude(et => et.Tag)
+                .ToListAsync();
 
             foreach (var @event in events)
             {
-                var participants = _context.Participants
+                var participants = await _context.Participants
                     .Where(p => p.EventFK == @event.Id)
-                    .ToList();
+                    .ToListAsync();
 
-                @event.listaParticipants = participants;
+                @event.ListaParticipants = participants;
             }
 
             return View(events);
-
         }
 
         // GET: Events/Details/5
@@ -54,7 +57,10 @@ namespace TrabalhoFinalDwASPNET.Controllers
             }
 
             var events = await _context.Events
+                .Include(e => e.EventTags)
+                    .ThenInclude(et => et.Tag)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (events == null)
             {
                 return NotFound();
@@ -84,13 +90,11 @@ namespace TrabalhoFinalDwASPNET.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,host_id,created_at,title,Description,Image,start_time,end_time,location,is_private,maxParticipants")] Events events)
+        public async Task<IActionResult> Create([Bind("Id,host_id,created_at,title,Description,Image,start_time,end_time,location,is_private,maxParticipants")] Events events, string tags)
         {
-
             if (ModelState.IsValid)
             {
                 string userId = GetUserId();
-
                 events.host_id = userId;
                 events.created_at = DateTime.Now;
 
@@ -99,18 +103,54 @@ namespace TrabalhoFinalDwASPNET.Controllers
                     ModelState.AddModelError("end_time", "End time cannot be smaller than start time.");
                     return View(events);
                 }
-                else
-                {
 
+                try
+                {
                     _context.Add(events);
                     await _context.SaveChangesAsync();
+
+                    if (!string.IsNullOrEmpty(tags))
+                    {
+                        var tagList = tags.Split(',').Select(t => t.Trim()).Take(5).ToList();
+                        foreach (var tagName in tagList)
+                        {
+                            var tag = await _context.Tags.FirstOrDefaultAsync(t => t.Name == tagName) ?? new ModelsTags { Name = tagName };
+                            if (tag.Id == 0)
+                            {
+                                _context.Tags.Add(tag);
+                                await _context.SaveChangesAsync();
+                            }
+
+                            var eventTag = new EventTag { EventId = events.Id, TagId = tag.Id };
+                            _context.EventTags.Add(eventTag);
+                        }
+                        await _context.SaveChangesAsync();
+                    }
+
                     return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, "An error occurred while creating the event. Please try again.");
+                    // Log the exception here for further analysis
+                }
+            }
+            else
+            {
+                // Log the model errors for further analysis
+                foreach (var modelState in ModelState.Values)
+                {
+                    foreach (var error in modelState.Errors)
+                    {
+                        // Log the error message
+                        var errorMessage = error.ErrorMessage;
+                    }
                 }
             }
             return View(events);
         }
 
-        // GET: Events/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Events == null)
@@ -118,7 +158,11 @@ namespace TrabalhoFinalDwASPNET.Controllers
                 return NotFound();
             }
 
-            var events = await _context.Events.FindAsync(id);
+            var events = await _context.Events
+                .Include(e => e.EventTags)
+                    .ThenInclude(et => et.Tag)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
             if (events == null)
             {
                 return NotFound();
@@ -133,11 +177,9 @@ namespace TrabalhoFinalDwASPNET.Controllers
         }
 
         // POST: Events/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,host_id,created_at,title,Description,Image,start_time,end_time,location,is_private,maxParticipants")] Events events)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,host_id,created_at,title,Description,Image,start_time,end_time,location,is_private,maxParticipants")] Events events, List<string> tags)
         {
             if (id != events.Id)
             {
@@ -153,6 +195,25 @@ namespace TrabalhoFinalDwASPNET.Controllers
             {
                 try
                 {
+                    // Remover tags antigas
+                    var oldEventTags = _context.EventTags.Where(et => et.EventId == id);
+                    _context.EventTags.RemoveRange(oldEventTags);
+
+                    // Adicionar novas tags
+                    foreach (var tagName in tags ?? new List<string>())
+                    {
+                        var tag = await _context.Tags.FirstOrDefaultAsync(t => t.Name == tagName);
+                        if (tag == null)
+                        {
+                            tag = new ModelsTags { Name = tagName };
+                            _context.Tags.Add(tag);
+                            await _context.SaveChangesAsync();
+                        }
+
+                        var eventTag = new EventTag { EventId = events.Id, TagId = tag.Id };
+                        _context.EventTags.Add(eventTag);
+                    }
+
                     _context.Update(events);
                     await _context.SaveChangesAsync();
                 }
@@ -345,14 +406,19 @@ namespace TrabalhoFinalDwASPNET.Controllers
                 .Where(e => e.host_id == userId)
                 .ToListAsync();
 
-            // Populate the listaParticipants property for each event
+            var events = await _context.Events
+                .Include(e => e.EventTags)
+                    .ThenInclude(et => et.Tag)
+                .ToListAsync();
+
+            // Populate the ListaParticipants property for each event
             foreach (var evnt in myEvents)
             {
                 var participants = await _context.Participants
                     .Where(p => p.EventFK == evnt.Id)
                     .ToListAsync();
 
-                evnt.listaParticipants = participants;
+                evnt.ListaParticipants = participants;
             }
 
             return View(myEvents);
@@ -387,10 +453,10 @@ namespace TrabalhoFinalDwASPNET.Controllers
                 .Select(p => p.Event)
                 .ToList();
 
-            // Populate the listaParticipants property for each event
+            // Populate the ListaParticipants property for each event
             foreach (var evnt in events)
             {
-                evnt.listaParticipants = _context.Participants
+                evnt.ListaParticipants = _context.Participants
                     .Where(p => p.EventFK == evnt.Id)
                     .ToList();
             }

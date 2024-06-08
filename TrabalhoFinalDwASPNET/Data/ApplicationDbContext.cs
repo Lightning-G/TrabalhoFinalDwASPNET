@@ -14,6 +14,9 @@ namespace TrabalhoFinalDwASPNET.Data
         public DbSet<Events> Events { get; set; }
         public DbSet<Participants> Participants { get; set; }
 
+        public DbSet<Tags> Tags { get; set; }
+        public DbSet<EventTag> EventTags { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configure the relationships
@@ -24,8 +27,22 @@ namespace TrabalhoFinalDwASPNET.Data
 
             modelBuilder.Entity<Participants>()
                 .HasOne(p => p.Event)
-                .WithMany(e => e.listaParticipants)
+                .WithMany(e => e.ListaParticipants)
                 .HasForeignKey(p => p.EventFK);
+
+            modelBuilder.Entity<EventTag>()
+            .HasKey(et => new { et.EventId, et.TagId });
+
+            modelBuilder.Entity<EventTag>()
+                .HasOne(et => et.Event)
+                .WithMany(e => e.EventTags)
+                .HasForeignKey(et => et.EventId);
+
+            modelBuilder.Entity<EventTag>()
+                .HasOne(et => et.Tag)
+                .WithMany(t => t.EventTags)
+                .HasForeignKey(et => et.TagId);
+
 
             base.OnModelCreating(modelBuilder);
         }

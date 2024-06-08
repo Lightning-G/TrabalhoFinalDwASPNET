@@ -23,6 +23,25 @@
         flex-direction: column;
         text-align: center;
     }
+
+    .tag-remove {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+        margin-left: 5px;
+        cursor: pointer;
+        color: #ff0000;
+        font-weight: bold;
+    }
+
+    .tag-remove:hover {
+        background-color: #ff0000;
+        color: #ffffff;
+        border-radius: 50%;
+    }
+
 </style>
 
 @if (!SignInManager.IsSignedIn(User))
@@ -94,6 +113,22 @@ else
                     <input asp-for="maxParticipants" class="form-control" />
                     <span asp-validation-for="maxParticipants" class="text-danger"></span>
                 </div>
+
+                <div class="form-group">
+                    <label>Tags</label>
+                    <input type="text" id="tagInput" class="form-control" placeholder="Digite uma tag e pressione Enter" />
+                    <div class="tag-container" id="tagContainer">
+                        @foreach (var eventTag in Model.EventTags)
+                        {
+                            <div class="tag">
+                                <span>@eventTag.Tag.Name</span>
+                                <span class="tag-remove" onclick="removeTag(this)">×</span>
+                                <input type="hidden" name="tags" value="@eventTag.Tag.Name" />
+                            </div>
+                        }
+                    </div>
+                </div>
+
                 <br />
                 <div class="form-group">
                     <input type="submit" value="Salvar" class="btn btn-primary" />
@@ -110,5 +145,33 @@ else
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            const MAX_TAGS = 5;
+
+            document.getElementById('tagInput').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    var tagName = this.value.trim();
+                    if (tagName && document.querySelectorAll('.tag').length < MAX_TAGS) {
+                        var tagContainer = document.getElementById('tagContainer');
+                        var tagElement = document.createElement('div');
+                        tagElement.classList.add('tag');
+                        tagElement.innerHTML = `
+                                    <span>${tagName}</span>
+                                    <span class="tag-remove" onclick="removeTag(this)">×</span>
+                                    <input type="hidden" name="tags" value="${tagName}" />
+                                `;
+                        tagContainer.appendChild(tagElement);
+                        this.value = '';
+                    } else if (document.querySelectorAll('.tag').length >= MAX_TAGS) {
+                        alert('Você já atingiu o limite máximo de 5 tags.');
+                    }
+                }
+            });
+
+            function removeTag(element) {
+                element.parentElement.remove();
+            }
+        </script>
     }
 }

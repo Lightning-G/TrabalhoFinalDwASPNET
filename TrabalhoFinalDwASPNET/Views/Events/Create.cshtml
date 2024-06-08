@@ -46,7 +46,7 @@ else
     <div class="row">
         <div class="col-md-4">
             <form asp-action="Create">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
                     <input asp-for="host_id" class="form-control" type="hidden" value="1" />
                     <span asp-validation-for="host_id" class="text-danger"></span>
@@ -94,6 +94,11 @@ else
                     <label asp-for="maxParticipants" class="control-label"></label>
                     <input asp-for="maxParticipants" class="form-control" />
                     <span asp-validation-for="maxParticipants" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label for="tags" class="control-label">Tags (up to 5, separated by commas)</label>
+                    <input id="tags" name="tags" class="form-control" />
+                    <span class="text-danger" data-valmsg-for="tags" data-valmsg-replace="true"></span>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Criar" class="btn btn-primary mt-3" />

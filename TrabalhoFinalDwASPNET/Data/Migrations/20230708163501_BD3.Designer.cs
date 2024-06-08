@@ -352,7 +352,7 @@ namespace TrabalhoFinalDwASPNET.Data.Migrations
             modelBuilder.Entity("TrabalhoFinalDwASPNET.Models.Participants", b =>
                 {
                     b.HasOne("TrabalhoFinalDwASPNET.Models.Events", "Event")
-                        .WithMany("listaParticipants")
+                        .WithMany("ListaParticipants")
                         .HasForeignKey("EventFK")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -370,7 +370,7 @@ namespace TrabalhoFinalDwASPNET.Data.Migrations
 
             modelBuilder.Entity("TrabalhoFinalDwASPNET.Models.Events", b =>
                 {
-                    b.Navigation("listaParticipants");
+                    b.Navigation("ListaParticipants");
                 });
 #pragma warning restore 612, 618
         }

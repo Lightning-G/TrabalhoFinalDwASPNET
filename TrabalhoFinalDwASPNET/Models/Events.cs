@@ -12,7 +12,7 @@ namespace TrabalhoFinalDwASPNET.Models
         public Events()
         {
             // inicializar a lista de Participantes do evento
-            listaParticipants = new HashSet<Participants>();
+            ListaParticipants = new HashSet<Participants>();
         }
 
 
@@ -89,7 +89,9 @@ namespace TrabalhoFinalDwASPNET.Models
         /// <summary>
         /// Lista dos Participantes associados ao Evento
         /// </summary>
-        public ICollection<Participants> listaParticipants { get; set; }
+        public ICollection<Participants> ListaParticipants { get; set; }
+
+        public ICollection<EventTag> EventTags { get; set; } = new List<EventTag>();
     }
 
 }

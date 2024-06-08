@@ -273,6 +273,21 @@ namespace TrabalhoFinalDwASPNET.Data.Migrations
                     b.ToTable("Events");
                 });
 
+            modelBuilder.Entity("TrabalhoFinalDwASPNET.Models.EventTag", b =>
+                {
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagId")
+                        .HasColumnType("int");
+
+                    b.HasKey("EventId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("EventTags");
+                });
+
             modelBuilder.Entity("TrabalhoFinalDwASPNET.Models.Participants", b =>
                 {
                     b.Property<int>("Id")
@@ -295,6 +310,23 @@ namespace TrabalhoFinalDwASPNET.Data.Migrations
                     b.HasIndex("UserFK");
 
                     b.ToTable("Participants");
+                });
+
+            modelBuilder.Entity("TrabalhoFinalDwASPNET.Models.Tags", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -348,10 +380,29 @@ namespace TrabalhoFinalDwASPNET.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("TrabalhoFinalDwASPNET.Models.EventTag", b =>
+                {
+                    b.HasOne("TrabalhoFinalDwASPNET.Models.Events", "Event")
+                        .WithMany("EventTags")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TrabalhoFinalDwASPNET.Models.Tags", "Tag")
+                        .WithMany("EventTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Tag");
+                });
+
             modelBuilder.Entity("TrabalhoFinalDwASPNET.Models.Participants", b =>
                 {
                     b.HasOne("TrabalhoFinalDwASPNET.Models.Events", "Event")
-                        .WithMany("listaParticipants")
+                        .WithMany("ListaParticipants")
                         .HasForeignKey("EventFK")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -369,7 +420,14 @@ namespace TrabalhoFinalDwASPNET.Data.Migrations
 
             modelBuilder.Entity("TrabalhoFinalDwASPNET.Models.Events", b =>
                 {
-                    b.Navigation("listaParticipants");
+                    b.Navigation("EventTags");
+
+                    b.Navigation("ListaParticipants");
+                });
+
+            modelBuilder.Entity("TrabalhoFinalDwASPNET.Models.Tags", b =>
+                {
+                    b.Navigation("EventTags");
                 });
 #pragma warning restore 612, 618
         }
