@@ -12,9 +12,9 @@ using TrabalhoFinalDwASPNET.Data.Migrations;
 using TrabalhoFinalDwASPNET.Models;
 
 namespace TrabalhoFinalDwASPNET.Controllers
-
 {
     using ModelsTags = TrabalhoFinalDwASPNET.Models.Tags;
+
     public class EventsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -26,8 +26,8 @@ namespace TrabalhoFinalDwASPNET.Controllers
             _userManager = userManager;
         }
 
-
         // GET: Events
+        // Retorna a lista de eventos
         [HttpGet("Index")]
         public async Task<IActionResult> Index()
         {
@@ -36,6 +36,7 @@ namespace TrabalhoFinalDwASPNET.Controllers
                     .ThenInclude(et => et.Tag)
                 .ToListAsync();
 
+            // Popula a lista de participantes para cada evento
             foreach (var @event in events)
             {
                 var participants = await _context.Participants
@@ -49,6 +50,7 @@ namespace TrabalhoFinalDwASPNET.Controllers
         }
 
         // GET: Events/Details/5
+        // Retorna os detalhes de um evento específico
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Events == null)
@@ -80,14 +82,14 @@ namespace TrabalhoFinalDwASPNET.Controllers
         }
 
         // GET: Events/Create
+        // Retorna a view para criar um novo evento
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Events/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Cria um novo evento
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,host_id,created_at,title,Description,Image,start_time,end_time,location,is_private,maxParticipants")] Events events, string tags)
@@ -100,7 +102,7 @@ namespace TrabalhoFinalDwASPNET.Controllers
 
                 if (events.end_time < events.start_time)
                 {
-                    ModelState.AddModelError("end_time", "End time cannot be smaller than start time.");
+                    ModelState.AddModelError("end_time", "A data de fim não pode ser menor que a de inicio");
                     return View(events);
                 }
 
@@ -131,7 +133,7 @@ namespace TrabalhoFinalDwASPNET.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError(string.Empty, "An error occurred while creating the event. Please try again.");
+                    ModelState.AddModelError(string.Empty, "Um erro ocorreu ao criar o evento. Por favor tente novamente.");
                     // Log the exception here for further analysis
                 }
             }
@@ -150,6 +152,8 @@ namespace TrabalhoFinalDwASPNET.Controllers
             return View(events);
         }
 
+        // GET: Events/Edit/5
+        // Retorna a view para editar um evento
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -177,6 +181,7 @@ namespace TrabalhoFinalDwASPNET.Controllers
         }
 
         // POST: Events/Edit/5
+        // Edita um evento existente
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,host_id,created_at,title,Description,Image,start_time,end_time,location,is_private,maxParticipants")] Events events, List<string> tags)
@@ -195,11 +200,11 @@ namespace TrabalhoFinalDwASPNET.Controllers
             {
                 try
                 {
-                    // Remover tags antigas
+                    // Remove as tags antigas
                     var oldEventTags = _context.EventTags.Where(et => et.EventId == id);
                     _context.EventTags.RemoveRange(oldEventTags);
 
-                    // Adicionar novas tags
+                    // Adiciona novas tags
                     foreach (var tagName in tags ?? new List<string>())
                     {
                         var tag = await _context.Tags.FirstOrDefaultAsync(t => t.Name == tagName);
@@ -234,9 +239,9 @@ namespace TrabalhoFinalDwASPNET.Controllers
         }
 
         // GET: Events/Delete/5
+        // Retorna a view para deletar um evento
         public async Task<IActionResult> Delete(int? id)
         {
-
             if (id == null || _context.Events == null)
             {
                 return NotFound();
@@ -258,6 +263,7 @@ namespace TrabalhoFinalDwASPNET.Controllers
         }
 
         // POST: Events/Delete/5
+        // Deleta um evento confirmado
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -281,19 +287,21 @@ namespace TrabalhoFinalDwASPNET.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // Verifica se um evento existe
         private bool EventsExists(int id)
         {
             return (_context.Events?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
+        // Participar de um evento
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Participate(int eventId)
         {
-            // Get the ID of the currently logged-in user
+            // Obtém o ID do usuário atualmente logado
             string userId = GetUserId();
 
-            // Check if the user is the host of the event
+            // Verifica se o usuário é o anfitrião do evento
             var eventHost = await _context.Events
                 .Where(e => e.Id == eventId)
                 .Select(e => e.host_id)
@@ -303,74 +311,74 @@ namespace TrabalhoFinalDwASPNET.Controllers
 
             if (IsParticipating(eventId).Result)
             {
-                ModelState.AddModelError(string.Empty, "You are already participating in this event.");
+                ModelState.AddModelError(string.Empty, "Você já está participando neste evento.");
 
-                // Return Event Details view with the model and error message
+                // Retorna a view Detalhes do Evento com o modelo e a mensagem de erro
                 return View("Details", eventD);
             }
 
             else if (DateTime.Now > eventD.start_time)
             {
-                ModelState.AddModelError(string.Empty, "This event has already started. Participation is no longer available.");
+                ModelState.AddModelError(string.Empty, "Este evento já começou. A participação não está mais disponível.");
 
-                // Return Event Details view with the model and error message
+                // Retorna a view Detalhes do Evento com o modelo e a mensagem de erro
                 return View("Details", eventD);
             }
 
-
             else if (userId == eventHost)
             {
-                ModelState.AddModelError(string.Empty, "You cannot participate in your own event.");
+                ModelState.AddModelError(string.Empty, "Você não pode participar no seu próprio evento.");
 
-                // Return Event Details view with the model and error message
+                // Retorna a view Detalhes do Evento com o modelo e a mensagem de erro
                 return View("Details", eventD);
             }
             else
             {
                 if (eventD.is_private)
                 {
-                    ModelState.AddModelError(string.Empty, "You can't participate in private events.");
+                    ModelState.AddModelError(string.Empty, "Você não pode participar em eventos privados.");
 
-                    // Return Event Details view with the model and error message
+                    // Retorna a view Detalhes do Evento com o modelo e a mensagem de erro
                     return View("Details", eventD);
                 }
-                // Check the number of participants for the event
+
+                // Verifica o número de participantes do evento
                 var participantsCount = await _context.Participants
                     .CountAsync(p => p.EventFK == eventId);
 
-                // Get the maximum participants allowed for the event
+                // Obtém o número máximo de participantes permitidos para o evento
                 var eventDetails = await _context.Events
                     .FirstOrDefaultAsync(e => e.Id == eventId);
 
                 if (participantsCount >= eventDetails.maxParticipants)
                 {
-                    // Participants limit reached, add error to ModelState
-                    ModelState.AddModelError(string.Empty, "The maximum number of participants has been reached.");
+                    // Limite de participantes atingido, adiciona erro ao ModelState
+                    ModelState.AddModelError(string.Empty, "O número máximo de participantes foi atingido.");
                 }
                 else
                 {
-                    // Create a new participant
+                    // Cria um novo participante
                     var participant = new Participants
                     {
                         UserFK = userId,
                         EventFK = eventId
                     };
 
-
-                    // Add the participant to the database
+                    // Adiciona o participante ao banco de dados
                     _context.Participants.Add(participant);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-                // Retrieve the event details for the Event Details view
+
+                // Recupera os detalhes do evento para a view Detalhes do Evento
                 var events = await _context.Events.FindAsync(eventId);
 
-                // Return Event Details view with the model and error message (if any)
+                // Retorna a view Detalhes do Evento com o modelo e a mensagem de erro (se houver)
                 return View("Details", events);
             }
         }
 
-
+        // Desparticipar de um evento
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Desparticipate(int eventId)
@@ -386,7 +394,7 @@ namespace TrabalhoFinalDwASPNET.Controllers
 
             if (participation == null)
             {
-                return NotFound("You are not participating in this event.");
+                return NotFound("Você não está participando neste evento.");
             }
 
             _context.Participants.Remove(participation);
@@ -395,13 +403,15 @@ namespace TrabalhoFinalDwASPNET.Controllers
             return RedirectToAction("Details", "Events", new { id = eventId });
         }
 
+        // GET: Events/MyEvents
+        // Retorna os eventos criados pelo usuário atualmente logado
         [HttpGet]
         public async Task<IActionResult> MyEvents()
         {
-            // Get the ID of the currently logged-in user
+            // Obtém o ID do usuário atualmente logado
             string userId = GetUserId();
 
-            // Retrieve the events created by the user
+            // Recupera os eventos criados pelo usuário
             var myEvents = await _context.Events
                 .Where(e => e.host_id == userId)
                 .ToListAsync();
@@ -411,7 +421,7 @@ namespace TrabalhoFinalDwASPNET.Controllers
                     .ThenInclude(et => et.Tag)
                 .ToListAsync();
 
-            // Populate the ListaParticipants property for each event
+            // Popula a lista de participantes para cada evento
             foreach (var evnt in myEvents)
             {
                 var participants = await _context.Participants
@@ -424,12 +434,14 @@ namespace TrabalhoFinalDwASPNET.Controllers
             return View(myEvents);
         }
 
+        // Obtém o ID do usuário atualmente logado
         public string GetUserId()
         {
             var userId = _userManager.GetUserId(User);
             return userId;
         }
 
+        // Verifica se o usuário está participando de um evento específico
         public async Task<bool> IsParticipating(int eventId)
         {
             var userId = _userManager.GetUserId(User);
@@ -441,26 +453,27 @@ namespace TrabalhoFinalDwASPNET.Controllers
             return eventHosts.Contains(eventId);
         }
 
+        // GET: Events/EventsParticipating
+        // Retorna os eventos em que o usuário está participando
         [HttpGet]
         public IActionResult EventsParticipating()
         {
-            // Get the ID of the currently logged-in user
+            // Obtém o ID do usuário atualmente logado
             string userId = GetUserId();
 
-            // Query the database to retrieve the events that the user is participating in
+            // Consulta o banco de dados para recuperar os eventos em que o usuário está participando
             var events = _context.Participants
                 .Where(p => p.UserFK == userId)
                 .Select(p => p.Event)
                 .ToList();
 
-            // Populate the ListaParticipants property for each event
+            // Popula a lista de participantes para cada evento
             foreach (var evnt in events)
             {
                 evnt.ListaParticipants = _context.Participants
                     .Where(p => p.EventFK == evnt.Id)
                     .ToList();
             }
-
 
             return View(events);
         }

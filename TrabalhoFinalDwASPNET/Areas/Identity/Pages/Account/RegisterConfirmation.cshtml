@@ -9,12 +9,12 @@
 @if (Model.DisplayConfirmAccountLink)
 {
     <p>
-        Um email foi enviado para o seu endereço de email para que você possa verificar sua conta. Por favor, siga todas as etapas listadas lá para verificar sua conta <a id="confirm-link" href="@Model.EmailConfirmationUrl">Reenviar Email</a>
+        Carregue aqui para comfirmar a criação da conta: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Comfirmar</a>
     </p>
 }
 else
 {
     <p>
-        Por favor, verifique seu email para confirmar sua conta.
+        Carregue aqui para comfirmar a criação da conta: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Comfirmar</a>
     </p>
 }
