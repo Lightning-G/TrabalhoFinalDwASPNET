@@ -14,9 +14,9 @@ namespace TrabalhoFinalDwASPNET
         public static async Task InitializeAsync(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             context.Database.Migrate();
-
+            
             // Verifica se há eventos na base de dados
-            if (context.Events.Any())
+            if (context.Users.Any())
             {
                 return; // A base de dados já foi inicializado
             }
