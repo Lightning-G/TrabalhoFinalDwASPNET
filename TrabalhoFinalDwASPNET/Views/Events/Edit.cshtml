@@ -144,33 +144,42 @@ else
 
 @section Scripts {
     @{
+        // Renderiza a partial view responsável pelos scripts de validação do lado do cliente.
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        <script>
-            const MAX_TAGS = 5;
 
+        // Script JavaScript para manipulação de tags no formulário.
+        <script>
+            const MAX_TAGS = 5; // Define o número máximo de tags permitidas.
+
+            // Adiciona um listener de evento para o campo de input de tags.
             document.getElementById('tagInput').addEventListener('keypress', function (e) {
+                // Verifica se a tecla pressionada foi 'Enter'.
                 if (e.key === 'Enter') {
-                    e.preventDefault();
-                    var tagName = this.value.trim();
+                    e.preventDefault(); // Previne o comportamento padrão do 'Enter'.
+                    var tagName = this.value.trim(); // Obtém o valor do input e remove espaços em branco extras.
+
+                    // Verifica se o campo não está vazio e se o número de tags não excede o máximo permitido.
                     if (tagName && document.querySelectorAll('.tag').length < MAX_TAGS) {
-                        var tagContainer = document.getElementById('tagContainer');
-                        var tagElement = document.createElement('div');
-                        tagElement.classList.add('tag');
+                        var tagContainer = document.getElementById('tagContainer'); // Obtém o contêiner de tags.
+                        var tagElement = document.createElement('div'); // Cria um novo elemento div para a tag.
+                        tagElement.classList.add('tag'); // Adiciona a classe 'tag' ao elemento.
                         tagElement.innerHTML = `
-                                    <span>${tagName}</span>
-                                    <span class="tag-remove" onclick="removeTag(this)">×</span>
-                                    <input type="hidden" name="tags" value="${tagName}" />
-                                `;
-                        tagContainer.appendChild(tagElement);
-                        this.value = '';
+                                        <span>${tagName}</span>
+                                        <span class="tag-remove" onclick="removeTag(this)">×</span>
+                                        <input type="hidden" name="tags" value="${tagName}" />
+                                    `; // Define o conteúdo HTML do elemento tag.
+                        tagContainer.appendChild(tagElement); // Adiciona o elemento tag ao contêiner.
+                        this.value = ''; // Limpa o campo de input.
                     } else if (document.querySelectorAll('.tag').length >= MAX_TAGS) {
-                        alert('Você já atingiu o limite máximo de 5 tags.');
+                        // Alerta o utilizador se o limite de tags for atingido.
+                        alert('Você já atingiu o limite máximo de 5 tags.'); 
                     }
                 }
             });
 
+            // Função para remover uma tag quando o botão de remoção é clicado.
             function removeTag(element) {
-                element.parentElement.remove();
+                element.parentElement.remove(); // Remove o elemento pai da tag (ou seja, a própria tag).
             }
         </script>
     }

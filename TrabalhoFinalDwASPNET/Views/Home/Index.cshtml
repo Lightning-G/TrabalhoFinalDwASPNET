@@ -62,9 +62,9 @@
 <body>
     <div class="base">
         <div class="slider">
-            <img src="https://i.ibb.co/tHPgY4d/Slider1.jpg" alt="Slider1">
-            <img src="https://i.ibb.co/vD7qK9W/Slider2.jpg" alt="Slider2">
-            <img src="https://i.ibb.co/QbfhG2B/Slider3.jpg" alt="Slider3">
+            <img src="https://samuelsampaio.azorshare.xyz/Slider3.png" alt="Slider1">
+            <img src="https://samuelsampaio.azorshare.xyz/image.png" alt="Slider2">
+            <img src="https://samuelsampaio.azorshare.xyz/image_1.png" alt="Slider3">
         </div>
 
         <div class="slider-nav">
@@ -80,37 +80,67 @@
     </div>
 
     <script>
+        // Seleciona todas as imagens do slider e armazena em um array
         const sliderImages = Array.from(document.querySelectorAll('.slider img'));
+        // Seleciona todos os elementos de navegação do slider e armazena em um array
         const sliderNav = Array.from(document.querySelectorAll('.slider-nav a'));
 
+        // Índice da imagem atualmente exibida
         let currentIndex = 0;
+
+        // ID do intervalo de tempo para o slider
         let intervalId;
 
+        // Função para mostrar a imagem com base no índice
         function showImage(index) {
+            // Oculta todas as imagens do slider
             sliderImages.forEach(img => img.style.display = 'none');
+
+            // Remove a classe 'active' de todos os elementos de navegação
             sliderNav.forEach(nav => nav.classList.remove('active'));
 
+            // Exibe a imagem correspondente ao índice
             sliderImages[index].style.display = 'block';
+
+            // Adiciona a classe 'active' ao elemento de navegação correspondente
             sliderNav[index].classList.add('active');
         }
 
+        // Função para iniciar o slider automático
         function startSlider() {
+            // Define um intervalo para alternar as imagens a cada 2000 milissegundos (2 segundos)
             intervalId = setInterval(() => {
+
+                // Atualiza o índice para a próxima imagem, voltando ao início se chegar ao final do array
                 currentIndex = (currentIndex + 1) % sliderImages.length;
+
+                // Mostra a imagem atualizada
                 showImage(currentIndex);
+
             }, 2000);
         }
 
+        // Adiciona um evento de clique a cada elemento de navegação do slider
         sliderNav.forEach((nav, index) => {
             nav.addEventListener('click', () => {
+
+                // Interrompe o intervalo de tempo do slider
                 clearInterval(intervalId);
+
+                // Atualiza o índice para o item clicado
                 currentIndex = index;
+
+                // Mostra a imagem correspondente ao novo índice
                 showImage(currentIndex);
+
+                // Reinicia o slider automático
                 startSlider();
             });
         });
 
+        // Inicia o slider automático quando a página é carregada
         startSlider();
+
     </script>
 </body>
 </html>
